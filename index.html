@@ -872,9 +872,9 @@
         
         /* 스크롤바 스타일 제거 (내부 스크롤 없음) */
         
-        .naver-map-btn {
-            background: #03c75a;
-            color: white;
+        .kakao-map-btn {
+            background: #FAE100;
+            color: #000000;
             border: none;
             border-radius: 4px;
             font-size: 11px;
@@ -894,8 +894,8 @@
             touch-action: manipulation;
         }
         
-        .naver-map-btn:hover, .naver-map-btn:active {
-            background: #02a049;
+        .kakao-map-btn:hover, .kakao-map-btn:active {
+            background: #F0D800;
         }
         
         .footer {
@@ -1235,11 +1235,11 @@
         let activeFilters = { outdoor: 'yes' }; // \uCF54\uC5D1\uC2A4 \uAD8C\uC5ED \uC81C\uC678 \uAE30\uBCF8 \uC120\uD0DD
         let isSpinning = false;
         
-        function createNaverMapLink(restaurant) {
+        function createKakaoMapLink(restaurant) {
             // \uC8FC\uC18C\uC5D0\uC11C \uB3C4\uBCF4XX\uBD84 \uC81C\uAC70\uD558\uACE0 \uAC74\uBB3C\uBA85/\uB3C4\uB85C\uBA85\uB9CC \uCD94\uCD9C
             // 삼성역 고정 검색어: 식당명 + 삼성역
             const searchQuery = restaurant.name + ' 삼성역';
-            return 'https://map.naver.com/v5/search/' + encodeURIComponent(searchQuery);
+            return 'https://map.kakao.com/?q=' + encodeURIComponent(searchQuery);
         }
         
         function updateStatus(message, type = 'info') {
@@ -1277,7 +1277,7 @@
             const locationEl = document.createElement('div');
             locationEl.className = 'card-location';
             locationEl.textContent = '📍 ' + (restaurant.location || '\uC704\uCE58 \uC815\uBCF4 \uC5C6\uC74C');
-            const mapUrl = createNaverMapLink(restaurant);
+            const mapUrl = createKakaoMapLink(restaurant);
             
             const menuEl = document.createElement('div');
             menuEl.className = 'card-menu';
@@ -1627,7 +1627,7 @@
                     "<span style=\"background: #fff3cd; color: #856404; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 600;\">🚶" + (walkMatch[1]) + "\uBD84</span>" : '';
                 
                 const weight = parseInt(restaurant.weight) || 1;
-                const mapLink = createNaverMapLink(restaurant);
+                const mapLink = createKakaoMapLink(restaurant);
                 
                 
                 // \uCE74\uD14C\uACE0\uB9AC\uBCC4 \uD074\uB798\uC2A4 \uACB0\uC815
@@ -1640,7 +1640,7 @@
                     categoryClass = 'japanese';
                 }
                 
-                return "<div class=\"restaurant-item\">\n                    <button class=\"delete-btn\" onclick=\"deleteRestaurant('" + (restaurant.name) + "')\" title=\"\uC0AD\uC81C\">×</button>\n                    <div class=\"restaurant-name\">\n                        " + (restaurant.name) + "\n                        <span class=\"card-category " + (categoryClass) + "\">" + (restaurant.category) + "</span>\n                    </div>\n                    <div class=\"restaurant-details\">\n                        <div style=\"margin-bottom: 4px;\">\n                            📍 " + (restaurant.location) + " " + (walkBadge) + " <a class=\"naver-map-btn\" href=\"" + (mapLink) + "\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">N</a>\n                        </div>\n                        <div style=\"margin-bottom: 4px;\">\n                            🍽️ " + (restaurant.menu || '\uBA54\uB274 \uC815\uBCF4 \uC5C6\uC74C') + "\n                        </div>\n                        <div>\n                            💰 " + (restaurant.price || '-') + " | ⭐ " + (restaurant.rating || '-') + "\n                        </div>\n                    </div>\n                    <div class=\"weight-control\">\n                        <span class=\"restaurant-pref\">" + ('★'.repeat(weight)) + ('☆'.repeat(5-weight)) + "</span>\n                        <button class=\"weight-btn\" onclick=\"updateRestaurantWeight('" + (restaurant.name) + "', -1)\" title=\"\uC120\uD638\uB3C4 \uAC10\uC18C\">−</button>\n                        <span class=\"weight-display\">" + (weight) + "</span>\n                        <button class=\"weight-btn\" onclick=\"updateRestaurantWeight('" + (restaurant.name) + "', 1)\" title=\"\uC120\uD638\uB3C4 \uC99D\uAC00\">+</button>\n                    </div>\n                </div>";
+                return "<div class=\"restaurant-item\">\n                    <button class=\"delete-btn\" onclick=\"deleteRestaurant('" + (restaurant.name) + "')\" title=\"\uC0AD\uC81C\">×</button>\n                    <div class=\"restaurant-name\">\n                        " + (restaurant.name) + "\n                        <span class=\"card-category " + (categoryClass) + "\">" + (restaurant.category) + "</span>\n                    </div>\n                    <div class=\"restaurant-details\">\n                        <div style=\"margin-bottom: 4px;\">\n                            📍 " + (restaurant.location) + " " + (walkBadge) + " <a class=\"kakao-map-btn\" href=\"" + (mapLink) + "\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">K</a>\n                        </div>\n                        <div style=\"margin-bottom: 4px;\">\n                            🍽️ " + (restaurant.menu || '\uBA54\uB274 \uC815\uBCF4 \uC5C6\uC74C') + "\n                        </div>\n                        <div>\n                            💰 " + (restaurant.price || '-') + " | ⭐ " + (restaurant.rating || '-') + "\n                        </div>\n                    </div>\n                    <div class=\"weight-control\">\n                        <span class=\"restaurant-pref\">" + ('★'.repeat(weight)) + ('☆'.repeat(5-weight)) + "</span>\n                        <button class=\"weight-btn\" onclick=\"updateRestaurantWeight('" + (restaurant.name) + "', -1)\" title=\"\uC120\uD638\uB3C4 \uAC10\uC18C\">−</button>\n                        <span class=\"weight-display\">" + (weight) + "</span>\n                        <button class=\"weight-btn\" onclick=\"updateRestaurantWeight('" + (restaurant.name) + "', 1)\" title=\"\uC120\uD638\uB3C4 \uC99D\uAC00\">+</button>\n                    </div>\n                </div>";
             }).join('');
             
             listEl.innerHTML = html;
