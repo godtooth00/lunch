@@ -1236,8 +1236,15 @@
         let isSpinning = false;
         
         function createNaverMapLink(restaurant) {
-            const searchQuery = (restaurant.name) + " \uCF54\uC5D1\uC2A4";
-            return "https://map.naver.com/v5/search/" + (encodeURIComponent(searchQuery));
+            // \uC8FC\uC18C\uC5D0\uC11C \uB3C4\uBCF4XX\uBD84 \uC81C\uAC70\uD558\uACE0 \uAC74\uBB3C\uBA85/\uB3C4\uB85C\uBA85\uB9CC \uCD94\uCD9C
+            const rawLoc = restaurant.location
+                .replace(/,?\s*\ub3c4\ubcf4\s*\d+\ub144?/g, '')
+                .replace(/,?\s*\ub3c4\ubcf4\ub9ac\s*\d+\ub144?/g, '')
+                .replace(/\s*\(\ubcf8\uac74\ubb3c\)/g, '')
+                .replace(/\s*2\uce35|\s*1\uce35|\s*B1|\s*B2|\s*\uc9c0\ud558\s*1\uce35|\s*\uc9c0\ud558\s*2\uce35/gi, '')
+                .trim();
+            const searchQuery = restaurant.name + ' ' + rawLoc;
+            return 'https://map.naver.com/v5/search/' + encodeURIComponent(searchQuery);
         }
         
         function updateStatus(message, type = 'info') {
