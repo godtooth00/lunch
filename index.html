@@ -1,0 +1,1692 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>점심뭐먹지 - WeWork Edition</title>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+            background: #f8f8f8;
+            color: #333;
+            line-height: 1.6;
+            font-weight: 400;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .container {
+            max-width: 480px;
+            width: 100%;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        .loading-dots {
+            display: inline-block;
+        }
+        
+        .loading-dots .dot {
+            animation: dotPulse 1.5s infinite;
+            font-size: 20px;
+            color: #666;
+            margin: 0 2px;
+        }
+        
+        .loading-dots .dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+        
+        .loading-dots .dot:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+        
+        .loading-dots .dot:nth-child(3) {
+            animation-delay: 1s;
+        }
+        
+        @keyframes dotPulse {
+            0%, 60%, 100% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+            30% {
+                opacity: 1;
+                transform: scale(1.3);
+            }
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        
+        .spinner.white {
+            border-top-color: white;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 동그라미 스피너 애니메이션 */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #333;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        
+        .spinner.white {
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid white;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .header {
+            background: white;
+            color: #333;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin: 0;
+            font-weight: 900;
+            position: relative;
+            z-index: 2;
+            background: linear-gradient(135deg, #000000, #333333, #000000);
+            background-size: 200% 200%;
+            animation: titleShift 4s ease infinite;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        @keyframes titleShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .wework-badge {
+            background: #000;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .main-section {
+            padding: 12px 14px;
+        }
+        
+        .btn-main {
+            width: 100%;
+            background: linear-gradient(135deg, #000, #333);
+            color: white;
+            border: none;
+            padding: 18px;
+            font-size: 18px;
+            font-weight: 800;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-main:active {
+            transform: scale(0.95) translateY(1px);
+            transition: transform 0.1s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        }
+        
+        .btn-main {
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .btn-main:hover {
+            background: linear-gradient(135deg, #333, #555);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        
+        .btn-main:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-main.spinning {
+            animation: colorPulse 1s ease-in-out infinite;
+            background: linear-gradient(45deg, #000, #333, #666, #333, #000);
+            background-size: 400% 400%;
+        }
+        
+        @keyframes colorPulse {
+            0% { 
+                background-position: 0% 50%;
+            }
+            50% { 
+                background-position: 100% 50%;
+            }
+            100% { 
+                background-position: 200% 50%;
+            }
+        }
+        
+        .slot-machine {
+            background: linear-gradient(135deg, #f8f9fa, #ffffff);
+            border-radius: 20px;
+            padding: 16px 14px;
+            margin-bottom: 16px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12), 0 4px 15px rgba(0,0,0,0.08);
+            border: 2px solid #e8e9ea;
+            position: relative;
+            overflow: visible;
+        }
+        
+        .slot-machine::before {
+            content: none;
+        }
+        
+        .slot-machine.active::before {
+            content: none;
+        }
+                
+        .slot-header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .slot-title {
+            background: linear-gradient(135deg, #000000, #666666, #333333);
+            background-size: 200% 200%;
+            animation: gradientShift 3s ease infinite;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 22px;
+            font-weight: 900;
+            margin-bottom: 8px;
+            letter-spacing: 3px;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            font-family: 'Arial Black', sans-serif;
+            position: relative;
+        }
+        
+        .slot-title::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(135deg, #333333, #666666);
+            border-radius: 2px;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .slot-subtitle {
+            color: #00d084;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .result-cards {
+            display: grid;
+            gap: 10px;
+        }
+        
+        .result-card {
+            background: white;
+            border: 2px solid #f0f0f0;
+            border-radius: 16px;
+            padding: 20px;
+            opacity: 1;
+            transform: scale(1);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+            position: relative;
+            overflow: visible;
+            height: 165px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .card-order {
+            font-size: 28px;
+            font-weight: 900;
+            color: #ddd;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+        
+        .result-card::before {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: -100%;
+            width: 300%;
+            height: 300%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: all 0.6s ease;
+            transform: rotate(45deg);
+            pointer-events: none; /* 터치/클릭 이벤트 통과 */
+        }
+        
+        .result-card:hover::before {
+            top: 100%;
+            left: 100%;
+        }
+        
+        .result-card.spinning {
+            opacity: 0.4;
+            border-color: #ccc;
+        }
+        
+        .result-card.active {
+            opacity: 1;
+            transform: scale(1) rotateY(0deg);
+            border-color: #333;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            background: white;
+            display: flex;
+            flex-direction: column;
+            padding: 12px 14px;
+            height: 155px;
+            overflow: visible;
+        }
+
+        /* 둥둥 떠있는 지도 버튼 */
+        @keyframes mapFloat {
+            0%, 100% { transform: translateY(-50%); }
+            50%       { transform: translateY(calc(-50% - 7px)); }
+        }
+
+        .card-map-float {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 52px;
+            border-radius: 10px;
+            background: #03c75a;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 900;
+            text-decoration: none;
+            box-shadow: 0 4px 14px rgba(3,199,90,0.55);
+            z-index: 30;
+            cursor: pointer;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: rgba(3,199,90,0.3);
+            animation: mapFloat 2.2s ease-in-out infinite;
+            user-select: none;
+            letter-spacing: 0;
+        }
+
+        .card-map-float:active {
+            background: #02a049;
+            animation: none;
+            transform: translateY(-50%) scale(0.92);
+        }
+
+        .result-card.active .card-name-row {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            margin-bottom: 5px;
+            flex-wrap: nowrap;
+        }
+
+        .result-card.active .card-name {
+            font-size: 19px;
+            font-weight: 800;
+            line-height: 1.1;
+            color: #333;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .result-card.active .card-category {
+            flex-shrink: 0;
+            margin-bottom: 0;
+        }
+
+        .result-card.active .card-location {
+            font-size: 12px;
+            margin-bottom: 4px;
+            padding: 2px 6px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .result-card.active .card-menu {
+            font-size: 12px;
+            margin-bottom: 4px;
+            color: #555;
+            line-height: 1.15;
+        }
+
+        .result-card.active .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        .result-card.active .card-preference {
+            font-size: 10px;
+            color: #888;
+            text-align: center;
+            padding: 2px 6px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            margin-top: auto;
+        }
+        
+        .card-category {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 700;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: #666;
+        }
+        
+        /* 카테고리별 파스텔 배지 색상 */
+        .card-category.korean {
+            background: #D63384;
+            color: white;
+        }
+        
+        .card-category.chinese {
+            background: #B76E00;
+            color: white;
+        }
+        
+        .card-category.japanese {
+            background: #8E4EC6;
+            color: white;
+        }
+        
+        .card-category.global {
+            background: #20A39E;
+            color: white;
+        }
+        
+        .card-name {
+            font-size: 18px;
+            font-weight: 800;
+            color: #333;
+            line-height: 1.1;
+            word-break: keep-all;
+        }
+        
+        .card-location {
+            font-size: 12px;
+            color: #666;
+            background: #f8f9fa;
+            padding: 4px 8px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .card-menu {
+            font-size: 13px;
+            color: #555;
+            line-height: 1.3;
+            word-break: keep-all;
+        }
+        
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+            font-size: 11px;
+            color: #666;
+        }
+        
+        .card-preference {
+            font-size: 10px;
+            color: #888;
+            text-align: center;
+            padding: 2px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        
+        .card-meta {
+            font-size: 13px;
+            color: #333;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-rating {
+            color: #333;
+        }
+        
+        .card-price {
+            color: #00d084;
+        }
+        
+        .controls {
+            margin-bottom: 20px;
+        }
+        
+        .search-box {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #eee;
+            border-radius: 12px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+        
+        .search-box:focus {
+            outline: none;
+            border-color: #333;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(0,0,0,0.1);
+        }
+        
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .category-filters {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin: 8px 0;
+        }
+        
+        .category-btn {
+            padding: 8px 6px;
+            font-size: 11px;
+            border-radius: 8px;
+        }
+        
+        .filter-btn {
+            padding: 12px;
+            border: 3px solid #eee;
+            background: white;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 700;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .filter-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(0,0,0,0.05);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            transform: translate(-50%, -50%);
+        }
+        
+        .filter-btn:hover::before {
+            width: 200px;
+            height: 200px;
+        }
+        
+        .filter-btn:hover {
+            border-color: #333;
+            background: #f5f5f5;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .filter-btn.active {
+            background: #333;
+            color: white;
+            border-color: #333;
+            transform: scale(1.02);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            font-weight: 800;
+        }
+        
+        .status {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 18px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            text-align: center;
+            font-weight: 700;
+            border: 2px solid #eee;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .status::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.8s ease;
+        }
+        
+        .status.loading::before {
+            animation: loading 1.5s infinite;
+        }
+        
+        @keyframes loading {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        .status.loading {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            color: #856404;
+            border-color: #ffc107;
+        }
+        
+        .status.success {
+            background: linear-gradient(135deg, #d1e7dd, #a3d5a3);
+            color: #0f5132;
+            border-color: #00d084;
+        }
+        
+        .status.error {
+            background: linear-gradient(135deg, #f8d7da, #f5b7b1);
+            color: #721c24;
+            border-color: #dc3545;
+        }
+        
+        .pool-badge-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            margin-top: 4px;
+        }
+
+        .pool-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: 0.2px;
+        }
+
+        .pool-badge.total {
+            background: #f0f0f0;
+            color: #555;
+            border: 1.5px solid #ddd;
+        }
+
+        .pool-badge.filtered {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1.5px solid #a5d6a7;
+        }
+
+        .pool-badge.filtered.dimmed {
+            background: #f0f0f0;
+            color: #999;
+            border-color: #ddd;
+        }
+
+        .pool-badge strong {
+            font-size: 13px;
+            font-weight: 900;
+        }
+
+        .restaurant-list {
+            margin-top: 25px;
+        }
+        
+        .restaurant-item {
+            background: white;
+            border: 2px solid #f0f0f0;
+            border-radius: 12px;
+            padding: 14px 14px 12px;
+            margin-bottom: 10px;
+            transition: all 0.2s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .restaurant-item:hover {
+            border-color: #ddd;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transform: translateY(-1px);
+        }
+        
+        .restaurant-name {
+            font-size: 16px;
+            font-weight: 800;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            line-height: 1.2;
+            padding-right: 30px; /* 삭제버튼 공간 */
+            flex-wrap: wrap;
+        }
+        
+        .restaurant-details {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        .weight-control {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding-top: 6px;
+            border-top: 1px solid #f0f0f0;
+            margin-top: 2px;
+        }
+        
+        .restaurant-pref {
+            font-size: 13px;
+            color: #f5a623;
+            flex: 1;
+            letter-spacing: 1px;
+        }
+        
+        .restaurant-meta {
+            display: none; /* 기존 meta 제거, weight-control 내 pref로 대체 */
+        }
+        
+        .weight-btn {
+            width: 24px;
+            height: 24px;
+            border: 1px solid #333;
+            background: white;
+            color: #333;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .weight-btn:hover {
+            background: #333;
+            color: white;
+        }
+        
+        .delete-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 24px;
+            height: 24px;
+            border: none;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(238, 90, 82, 0.3);
+            font-weight: 700;
+            line-height: 1;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .delete-btn:hover {
+            background: linear-gradient(135deg, #ff5252, #d32f2f);
+            transform: scale(1.08);
+            box-shadow: 0 3px 8px rgba(238, 90, 82, 0.4);
+        }
+        
+        .delete-btn:active {
+            transform: scale(0.9);
+        }
+        
+        .weight-display {
+            min-width: 16px;
+            text-align: center;
+            font-weight: bold;
+            color: #333;
+            font-size: 12px;
+            line-height: 1;
+        }
+        
+        .restaurant-list {
+            /* 내부 스크롤 제거 — 페이지 전체 스크롤로 자연스럽게 */
+            padding: 0;
+            margin-top: 10px;
+        }
+        
+        /* 스크롤바 스타일 제거 (내부 스크롤 없음) */
+        
+        .naver-map-btn {
+            background: #03c75a;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 900;
+            cursor: pointer;
+            margin-left: 5px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 20px;
+            padding: 0;
+            text-align: center;
+            line-height: 1;
+            flex-shrink: 0;
+            touch-action: manipulation;
+        }
+        
+        .naver-map-btn:hover, .naver-map-btn:active {
+            background: #02a049;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 25px;
+            color: #666;
+            font-size: 13px;
+            border-top: 2px solid #f0f0f0;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            font-weight: 600;
+            line-height: 1.6;
+        }
+        
+        .footer-main {
+            font-size: 15px;
+            color: #333;
+            margin-bottom: 6px;
+            font-weight: 800;
+        }
+        
+        .footer-dev {
+            font-size: 13px;
+            color: #555;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .footer-disclaimer {
+            font-size: 11px;
+            color: #777;
+            font-weight: 500;
+            font-style: italic;
+            letter-spacing: 0.3px;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                box-shadow: none;
+            }
+            
+            .header {
+                flex-direction: row;
+                gap: 6px;
+                padding: 12px 14px;
+                align-items: center;
+            }
+            
+            .header h1 {
+                font-size: 18px;
+                white-space: nowrap;
+            }
+            
+            .wework-badge {
+                font-size: 9px;
+                padding: 5px 9px;
+                white-space: nowrap;
+                flex-shrink: 0;
+                letter-spacing: 0.5px;
+            }
+            
+            .main-section {
+                padding: 20px 15px;
+            }
+            
+            .btn-main {
+                padding: 20px;
+                font-size: 18px;
+                margin-bottom: 20px;
+            }
+            
+            .slot-machine {
+                padding: 15px;
+                margin-bottom: 20px;
+            }
+            
+            .slot-title {
+                font-size: 16px;
+                margin-bottom: 6px;
+            }
+            
+            .slot-subtitle {
+                font-size: 12px;
+            }
+            
+            /* 모바일에서 세로 배치 최적화 */
+            .result-cards {
+                gap: 5px;
+            }
+            
+            .result-card {
+                padding: 10px 12px;
+                height: 155px;
+                border-radius: 10px;
+                border-width: 2px;
+            }
+            
+            .result-card.active {
+                height: 140px;
+                padding: 10px 12px;
+            }
+
+            .card-map-float {
+                width: 38px;
+                height: 46px;
+                right: 8px;
+                font-size: 15px;
+                border-radius: 8px;
+                box-shadow: 0 3px 10px rgba(3,199,90,0.5);
+                touch-action: manipulation;
+                -webkit-tap-highlight-color: rgba(3,199,90,0.3);
+                z-index: 30;
+                animation: mapFloat 2.2s ease-in-out infinite;
+            }
+            
+            .card-category {
+                padding: 2px 6px;
+                font-size: 10px;
+                margin-bottom: 0;
+                border-radius: 5px;
+            }
+            
+            .card-name {
+                font-size: 15px;
+                margin-bottom: 0;
+                line-height: 1.15;
+                font-weight: 800;
+            }
+            
+            .card-name-row {
+                gap: 6px;
+                margin-bottom: 5px;
+            }
+            
+            .card-location {
+                font-size: 11px;
+                padding: 2px 5px;
+                margin-bottom: 4px;
+                border-radius: 4px;
+            }
+            
+            .card-menu {
+                font-size: 11px;
+                margin-bottom: 4px;
+                line-height: 1.15;
+            }
+            
+            .card-meta {
+                font-size: 10px;
+                font-weight: 600;
+                display: flex;
+                justify-content: space-between;
+            }
+            
+            .search-box {
+                padding: 15px;
+                font-size: 16px;
+                margin-bottom: 15px;
+                border-radius: 10px;
+            }
+            
+            .filters {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+                margin-bottom: 20px;
+            }
+            
+            .category-filters {
+                grid-column: 1 / -1;
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 6px;
+                margin: 8px 0;
+            }
+            
+            .category-btn {
+                padding: 8px 4px;
+                font-size: 10px;
+                border-radius: 6px;
+            }
+            
+            .filter-btn {
+                padding: 12px 8px;
+                font-size: 12px;
+                border-radius: 10px;
+            }
+            
+            .status {
+                padding: 15px;
+                margin-bottom: 20px;
+                font-size: 14px;
+                border-radius: 10px;
+            }
+            
+            .restaurant-item {
+                padding: 12px 12px 10px;
+                margin-bottom: 8px;
+                border-radius: 10px;
+            }
+            
+            .restaurant-name {
+                font-size: 15px;
+                padding-right: 28px;
+            }
+            
+            .restaurant-details {
+                font-size: 12px;
+            }
+            
+            .weight-control {
+                padding-top: 6px;
+                gap: 6px;
+            }
+            
+            .restaurant-pref {
+                font-size: 12px;
+            }
+            
+            .weight-btn {
+                width: 26px;
+                height: 26px;
+                font-size: 14px;
+            }
+            
+            .footer {
+                padding: 20px 15px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>점심뭐먹지</h1>
+            <div class="wework-badge">WeWork Edition</div>
+        </div>
+        
+        <div class="main-section">
+            <button class="btn-main" id="randomBtn">
+                🎯 선호도 반영 추천
+            </button>
+            
+            <div class="slot-machine" id="slotMachine">
+                <div class="slot-header">
+                    <div class="slot-title">TODAY's PICKs</div>
+                </div>
+                <div class="result-cards" id="resultCards">
+                    <div class="result-card" id="card1">
+                        <div class="card-order">1st</div>
+                    </div>
+                    <div class="result-card" id="card2">
+                        <div class="card-order">2nd</div>
+                    </div>
+                    <div class="result-card" id="card3">
+                        <div class="card-order">3rd</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <input type="text" class="search-box" id="searchBox" placeholder="🔍 식당이나 메뉴를 검색하세요...">
+                
+                <div class="filters">
+                    <button class="filter-btn" data-filter="walk" data-value="5">🚶‍♂️ 5분 이내</button>
+                    <button class="filter-btn" data-filter="rating" data-value="high">⭐ 고평점(4.3↑)</button>
+                    <button class="filter-btn" data-filter="preference" data-value="high">👍 선호도(3↑)</button>
+                    <button class="filter-btn" data-filter="outdoor" data-value="yes">🏢 코엑스 권역 제외</button>
+                    <div class="category-filters">
+                        <button class="filter-btn category-btn" data-filter="category" data-value="korean">🇰🇷 한식</button>
+                        <button class="filter-btn category-btn" data-filter="category" data-value="chinese">🇨🇳 중식</button>
+                        <button class="filter-btn category-btn" data-filter="category" data-value="japanese">🇯🇵 일식</button>
+                        <button class="filter-btn category-btn" data-filter="category" data-value="global">🌍 세계요리</button>
+                    </div>
+                    <button class="filter-btn" onclick="showAllRestaurants()">📋 전체보기</button>
+                    <button class="filter-btn" onclick="clearAllFilters()">🔄 필터 초기화</button>
+                </div>
+            </div>
+            
+            <div class="pool-badge-row" id="poolBadgeRow" style="display:none">
+                <span class="pool-badge total">전체 <strong id="totalCount">0</strong></span>
+                <span class="pool-badge filtered" id="filteredBadge">풀 <strong id="filteredCount">0</strong></span>
+            </div>
+
+            <div class="restaurant-list" id="restaurantList">
+                <div style="text-align: center; padding: 40px; color: #666; font-size: 16px; display: flex; align-items: center; justify-content: center;">
+                    <div class="spinner"></div>
+                    데이터 로딩중...
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div class="footer-main">
+                <span style="display:inline-block; transform:scaleX(-1); font-style:normal;">©</span> Copyleft 2026
+            </div>
+            <div class="footer-dev">
+                Made with ☕ and 💻 by seonghan at Nota Inc.
+            </div>
+            <div class="footer-disclaimer">
+                맛없는 메뉴는 개인의 입맛과 운에 따른 것으로서 만든이는 면책됩니다
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Apps Script\uC5D0\uC11C \uC11C\uBE59\uB420 \uB54C\uB294 \uC790\uAE30 \uC790\uC2E0\uC774 API \uC5D4\uB4DC\uD3EC\uC778\uD2B8
+        // API \uC5D4\uB4DC\uD3EC\uC778\uD2B8 (\uD56D\uC0C1 exec URL \uACE0\uC815)
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbymQFlDGKyH0wU4EXll28u9bTKDOPf7JgKm0u8G2wy77pgxpS6rheL_RS0V41Ef1wHRZQ/exec';
+
+        // \uD658\uACBD \uAC10\uC9C0: Apps Script \uB0B4\uBD80(google.script.run \uC0AC\uC6A9) vs \uC678\uBD80(fetch \uC0AC\uC6A9)
+        const IS_GAS = (typeof google !== 'undefined' && typeof google.script !== 'undefined');
+
+        // \uD1B5\uD569 API \uD638\uCD9C - Apps Script: google.script.run / Netlify \uB4F1: fetch
+        function apiCall(action, params) {
+            if (IS_GAS) {
+                return new Promise(function(resolve, reject) {
+                    var runner = google.script.run
+                        .withSuccessHandler(function(data) { resolve(data); })
+                        .withFailureHandler(function(err) { reject(err); });
+                    if (action === 'getPlacesData')    runner.getPlacesDataForClient();
+                    else if (action === 'deleteRestaurant') runner.deleteRestaurantForClient(params.name);
+                    else if (action === 'updateWeight')     runner.updateWeightForClient(params.name, params.weight);
+                });
+            }
+            // Netlify / \uB85C\uCEEC \uD30C\uC77C \uD658\uACBD
+            if (action === 'getPlacesData') {
+                return fetch(SCRIPT_URL + '?action=getPlacesData').then(function(r){ return r.json(); });
+            }
+            var fd = new URLSearchParams();
+            fd.append('action', action);
+            Object.keys(params || {}).forEach(function(k){ fd.append(k, params[k]); });
+            return fetch(SCRIPT_URL, { method: 'POST', body: fd }).then(function(r){ return r.json(); });
+        }
+        
+        let allRestaurants = [];
+        let filteredRestaurants = [];
+        let activeFilters = { outdoor: 'yes' }; // \uCF54\uC5D1\uC2A4 \uAD8C\uC5ED \uC81C\uC678 \uAE30\uBCF8 \uC120\uD0DD
+        let isSpinning = false;
+        
+        function createNaverMapLink(restaurant) {
+            const searchQuery = (restaurant.name) + " \uCF54\uC5D1\uC2A4";
+            return "https://map.naver.com/v5/search/" + (encodeURIComponent(searchQuery));
+        }
+        
+        function updateStatus(message, type = 'info') {
+            // Status \uC694\uC18C\uAC00 \uC81C\uAC70\uB418\uC5B4 \uC544\uBB34 \uB3D9\uC791\uD558\uC9C0 \uC54A\uC74C
+            console.log('Status:', message, type);
+        }
+        
+        function updateCard(cardIndex, restaurant) {
+            const card = document.getElementById('card' + (cardIndex + 1));
+            if (!card || !restaurant) return;
+            
+            // \uAE30\uC874 \uB0B4\uC6A9 \uBAA8\uB450 \uC81C\uAC70
+            card.innerHTML = '';
+            
+            // \uC0C8\uB85C\uC6B4 \uCE74\uB4DC \uAD6C\uC870 \uC0DD\uC131
+            const categoryEl = document.createElement('div');
+            categoryEl.className = 'card-category';
+            categoryEl.textContent = restaurant.category;
+            
+            // \uCE74\uD14C\uACE0\uB9AC\uBCC4 \uC0C9\uC0C1 \uD074\uB798\uC2A4 \uCD94\uAC00
+            if (restaurant.category.includes('\uD55C\uC2DD')) {
+                categoryEl.classList.add('korean');
+            } else if (restaurant.category.includes('\uC911\uC2DD')) {
+                categoryEl.classList.add('chinese');
+            } else if (restaurant.category.includes('\uC77C\uC2DD')) {
+                categoryEl.classList.add('japanese');
+            } else {
+                categoryEl.classList.add('global');
+            }
+            
+            const nameEl = document.createElement('div');
+            nameEl.className = 'card-name';
+            nameEl.textContent = restaurant.name;
+            
+            const locationEl = document.createElement('div');
+            locationEl.className = 'card-location';
+            locationEl.textContent = '📍 ' + (restaurant.location || '\uC704\uCE58 \uC815\uBCF4 \uC5C6\uC74C');
+            const mapUrl = createNaverMapLink(restaurant);
+            
+            const menuEl = document.createElement('div');
+            menuEl.className = 'card-menu';
+            menuEl.textContent = '🍽️ ' + (restaurant.menu || '\uBA54\uB274 \uC815\uBCF4 \uC5C6\uC74C');
+            
+            const metaEl = document.createElement('div');
+            metaEl.className = 'card-meta';
+            
+            const ratingEl = document.createElement('span');
+            ratingEl.className = 'card-rating';
+            ratingEl.textContent = '★ ' + (restaurant.rating || '-');
+            
+            const priceEl = document.createElement('span');
+            priceEl.className = 'card-price';
+            priceEl.textContent = '💰 ' + (restaurant.price || '-');
+            
+            metaEl.appendChild(ratingEl);
+            metaEl.appendChild(priceEl);
+            
+            // \uC120\uD638\uB3C4 \uCD94\uAC00
+            const weight = parseInt(restaurant.weight) || 1;
+            const preferenceEl = document.createElement('div');
+            preferenceEl.className = 'card-preference';
+            preferenceEl.innerHTML = "\uC120\uD638\uB3C4: " + (weight) + "/5 " + ('★'.repeat(weight)) + ('☆'.repeat(5-weight));
+            
+            // \uC774\uB984 + \uCE74\uD14C\uACE0\uB9AC \uBC30\uC9C0\uB97C \uAC19\uC740 \uC904\uC5D0 \uBC30\uCE58\uD560 wrapper
+            const nameRowEl = document.createElement('div');
+            nameRowEl.className = 'card-name-row';
+            nameRowEl.appendChild(nameEl);
+            nameRowEl.appendChild(categoryEl);
+            
+            // \uC9C0\uB3C4 \uBC84\uD2BC — absolute \uB3C5\uB9BD \uC694\uC18C (overflow/flex \uC601\uD5A5 \uC5C6\uC74C)
+            const mapBtnEl = document.createElement('a');
+            mapBtnEl.className = 'card-map-float';
+            mapBtnEl.href = mapUrl;
+            mapBtnEl.target = '_blank';
+            mapBtnEl.rel = 'noopener noreferrer';
+            mapBtnEl.innerHTML = '<span style="pointer-events:none">N</span>';
+            // iOS \uD130\uCE58 \uBCF4\uC7A5 \uC778\uB77C\uC778 \uC2A4\uD0C0\uC77C
+            mapBtnEl.style.webkitTapHighlightColor = 'rgba(3,199,90,0.3)';
+            mapBtnEl.style.touchAction = 'manipulation';
+
+            // \uCE74\uB4DC\uC5D0 \uCD94\uAC00
+            card.appendChild(nameRowEl);
+            card.appendChild(locationEl);
+            card.appendChild(menuEl);
+            card.appendChild(metaEl);
+            card.appendChild(preferenceEl);
+            card.appendChild(mapBtnEl);
+            
+            card.classList.remove('spinning');
+            card.classList.add('active');
+        }
+        
+        function clearCards() {
+            const initialTexts = ['1st', '2nd', '3rd'];
+            
+            for (let i = 1; i <= 3; i++) {
+                const card = document.getElementById('card' + i);
+                card.classList.remove('active', 'spinning');
+                
+                // \uAE30\uC874 \uB0B4\uC6A9 \uBAA8\uB450 \uC81C\uAC70
+                card.innerHTML = '';
+                
+                // \uC21C\uC11C\uB9CC \uD45C\uC2DC
+                const orderEl = document.createElement('div');
+                orderEl.className = 'card-order';
+                orderEl.textContent = initialTexts[i-1];
+                card.appendChild(orderEl);
+            }
+        }
+        
+        async function loadRestaurants() {
+            if (allRestaurants.length > 0) return;
+            
+            // \uBC84\uD2BC \uC0C1\uD0DC\uB97C \uB85C\uB529\uC73C\uB85C \uBCC0\uACBD
+            const btn = document.getElementById('randomBtn');
+            btn.innerHTML = '<span class="spinner white"></span>\uB370\uC774\uD130 \uB85C\uB529\uC911...';
+            btn.classList.add('spinning');
+            btn.style.pointerEvents = 'none';
+            btn.style.opacity = '0.7';
+            
+            try {
+                const data = await apiCall('getPlacesData');
+                console.log('API \uC751\uB2F5:', data);
+                
+                let restaurants = [];
+                
+                if (Array.isArray(data)) {
+                    restaurants = data;
+                } else if (data && data.restaurants && Array.isArray(data.restaurants)) {
+                    restaurants = data.restaurants;
+                } else if (typeof data === 'string') {
+                    try {
+                        const innerData = JSON.parse(data);
+                        if (Array.isArray(innerData)) {
+                            restaurants = innerData;
+                        } else if (innerData.restaurants) {
+                            restaurants = innerData.restaurants;
+                        }
+                    } catch (e) {
+                        console.error('\uB0B4\uBD80 JSON \uD30C\uC2F1 \uC2E4\uD328:', e);
+                    }
+                } else if (data && data.error) {
+                    throw new Error(data.error);
+                }
+                
+                if (!Array.isArray(restaurants)) {
+                    console.error('restaurants\uAC00 \uBC30\uC5F4\uC774 \uC544\uB2D8:', restaurants);
+                    throw new Error('\uC2DD\uB2F9 \uB370\uC774\uD130\uAC00 \uC62C\uBC14\uB978 \uBC30\uC5F4 \uD615\uC2DD\uC774 \uC544\uB2D9\uB2C8\uB2E4');
+                }
+                
+                if (restaurants.length === 0) {
+                    throw new Error('\uC2DD\uB2F9 \uB370\uC774\uD130\uAC00 \uBE44\uC5B4\uC788\uC2B5\uB2C8\uB2E4');
+                }
+                
+                restaurants = restaurants.filter(r => r && r.name && r.name.trim() !== '');
+                
+                allRestaurants = restaurants;
+                filteredRestaurants = restaurants;
+                
+                console.log('\uB85C\uB4DC\uB41C \uCCAB \uBC88\uC9F8 \uC2DD\uB2F9:', restaurants[0]);
+                
+                // \uC790\uB3D9\uC73C\uB85C \uB9AC\uC2A4\uD2B8 \uD45C\uC2DC — \uAE30\uBCF8 \uD544\uD130(\uCF54\uC5D1\uC2A4 \uAD8C\uC5ED \uC81C\uC678) \uC801\uC6A9
+                applyFilters();
+                
+                // \uBC84\uD2BC \uC0C1\uD0DC\uB97C \uC989\uC2DC \uC6D0\uB798\uB300\uB85C \uBCF5\uAD6C
+                const btn = document.getElementById('randomBtn');
+                btn.classList.remove('spinning');
+                btn.innerHTML = '🎯 \uC120\uD638\uB3C4 \uBC18\uC601 \uCD94\uCC9C';
+                btn.style.pointerEvents = '';
+                btn.style.opacity = '1';
+                
+            } catch (error) {
+                // \uBC84\uD2BC \uC0C1\uD0DC\uB97C \uC5D0\uB7EC\uB85C \uBCC0\uACBD
+                const btn = document.getElementById('randomBtn');
+                btn.classList.remove('spinning');
+                btn.innerHTML = '❌ \uB85C\uB529 \uC2E4\uD328';
+                btn.style.pointerEvents = 'none';
+                btn.style.opacity = '0.5';
+                // updateStatus('❌ \uB370\uC774\uD130 \uB85C\uB4DC \uC2E4\uD328: ' + error.message, 'error');
+                console.error('\uB85C\uB4DC \uC5D0\uB7EC:', error);
+            }
+        }
+        
+        function deleteRestaurant(restaurantName) {
+            // \uB354 \uC608\uC05C \uD655\uC778 \uCC3D
+            const isConfirmed = confirm("🗑️ \uC815\uB9D0 \uC0AD\uC81C\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?\n\n📍 " + (restaurantName) + "\n\n\uC0AD\uC81C\uB41C \uB370\uC774\uD130\uB294 \uBCF5\uAD6C\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.");
+            
+            if (!isConfirmed) {
+                return;
+            }
+            
+            // \uD074\uB77C\uC774\uC5B8\uD2B8\uC5D0\uC11C \uC989\uC2DC \uC81C\uAC70
+            allRestaurants = allRestaurants.filter(r => r.name !== restaurantName);
+            filteredRestaurants = filteredRestaurants.filter(r => r.name !== restaurantName);
+            
+            // \uC11C\uBC84\uC5D0 \uC0AD\uC81C \uC694\uCCAD (\uBE44\uB3D9\uAE30)
+            apiCall('deleteRestaurant', { name: restaurantName })
+                .catch(err => console.log('\uC0AD\uC81C \uC694\uCCAD \uC2E4\uD328:', err));
+            
+            // UI \uC989\uC2DC \uC5C5\uB370\uC774\uD2B8
+            displayRestaurants();
+        }
+        
+        async function startSlotMachine() {
+            if (isSpinning || allRestaurants.length === 0) return;
+            
+            isSpinning = true;
+            const btn = document.getElementById('randomBtn');
+            const slotMachine = document.getElementById('slotMachine');
+            
+            // \uBC84\uD2BC \uBC0F \uC2AC\uB86F\uBA38\uC2E0 \uC0C1\uD0DC \uBCC0\uACBD
+            btn.classList.add('spinning');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner white"></span>\uCD94\uCC9C \uC911...';
+            
+            slotMachine.classList.add('active');
+            
+            clearCards();
+            // updateStatus('🔄 \uCD94\uCC9C \uC54C\uACE0\uB9AC\uC998 \uC791\uB3D9 \uC911...', 'loading');
+            
+            // \uAC00\uC911\uCE58 \uAE30\uBC18 \uB79C\uB364 \uC120\uD0DD\uC744 \uC704\uD55C \uB370\uC774\uD130 \uC900\uBE44
+            const availableRestaurants = filteredRestaurants.length > 0 ? filteredRestaurants : allRestaurants;
+            const weightedRestaurants = [];
+            
+            availableRestaurants.forEach(restaurant => {
+                const weight = Math.max(1, parseInt(restaurant.weight) || 1);
+                // \uC81C\uACF1 \uAC00\uC911\uCE58: \uC120\uD638\uB3C4 \uCC28\uC774\uB97C \uADF9\uC801\uC73C\uB85C \uBC18\uC601 (1→1, 2→4, 3→9, 5→25\uBC30)
+                const copies = weight * weight;
+                for (let i = 0; i < copies; i++) {
+                    weightedRestaurants.push(restaurant);
+                }
+            });
+            
+            // \uAC01 \uCE74\uB4DC \uC2A4\uD53C\uB2DD \uC2DC\uC791 - \uB354 \uBE60\uB978 \uC18D\uB3C4
+            const cards = [1, 2, 3];
+            const spinDurations = [1000, 1300, 1600]; // \uB354 \uBE60\uB978 \uC815\uC9C0 \uC2DC\uAC04
+            const selectedRestaurants = [];
+            
+            cards.forEach((cardNum, index) => {
+                const card = document.getElementById('card' + cardNum);
+                card.classList.add('spinning');
+                
+                // \uC2A4\uD53C\uB2DD \uC911 \uBE60\uB978 \uCE74\uB4DC \uBCC0\uACBD - \uB354 \uBD80\uB4DC\uB7FD\uAC8C
+                const spinInterval = setInterval(() => {
+                    const randomRestaurant = weightedRestaurants[Math.floor(Math.random() * weightedRestaurants.length)];
+                    updateCard(index, randomRestaurant);
+                }, 60); // 60ms\uB85C \uB354 \uBE60\uB974\uACE0 \uBD80\uB4DC\uB7FD\uAC8C
+                
+                // \uAC01\uAC01 \uB2E4\uB978 \uC2DC\uAC04\uC5D0 \uBA48\uCDA4
+                setTimeout(() => {
+                    clearInterval(spinInterval);
+                    
+                    // \uCD5C\uC885 \uC120\uD0DD - \uC774\uBBF8 \uBF51\uD78C \uC2DD\uB2F9 \uC774\uB984 \uAE30\uC900\uC73C\uB85C \uC911\uBCF5 \uC81C\uC678, \uAC00\uC911\uCE58 \uD480 \uC720\uC9C0
+                    const selectedNames = selectedRestaurants.map(r => r.name);
+                    let finalRestaurant;
+                    const remaining = weightedRestaurants.filter(r => !selectedNames.includes(r.name));
+                    const pool = remaining.length > 0 ? remaining : weightedRestaurants;
+                    finalRestaurant = pool[Math.floor(Math.random() * pool.length)];
+                    selectedRestaurants.push(finalRestaurant);
+                    updateCard(index, finalRestaurant);
+                    
+                    // \uB9C8\uC9C0\uB9C9 \uCE74\uB4DC\uAC00 \uBA48\uCD98 \uD6C4
+                    if (index === cards.length - 1) {
+                        setTimeout(() => {
+                            slotMachine.classList.remove('active');
+                            btn.classList.remove('spinning');
+                            btn.disabled = false;
+                            btn.innerHTML = '🎯 \uC120\uD638\uB3C4 \uBC18\uC601 \uCD94\uCC9C';
+                            isSpinning = false;
+                        }, 300);
+                    }
+                    
+                }, spinDurations[index]);
+            });
+        }
+        
+        function updateRestaurantWeight(restaurantName, delta) {
+            const restaurant = allRestaurants.find(r => r.name === restaurantName);
+            if (restaurant) {
+                const currentWeight = parseInt(restaurant.weight) || 1;
+                const newWeight = Math.max(1, Math.min(5, currentWeight + delta));
+                restaurant.weight = newWeight;
+                
+                // \uC11C\uBC84\uC5D0 \uC5C5\uB370\uC774\uD2B8 \uC694\uCCAD (\uBE44\uB3D9\uAE30)
+                apiCall('updateWeight', { name: restaurantName, weight: newWeight })
+                    .catch(err => console.log('\uAC00\uC911\uCE58 \uC5C5\uB370\uC774\uD2B8 \uC2E4\uD328:', err));
+                
+                // UI \uC989\uC2DC \uC5C5\uB370\uC774\uD2B8
+                displayRestaurants();
+            }
+        }
+        
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+            
+            filteredRestaurants = allRestaurants.filter(restaurant => {
+                if (searchTerm) {
+                    const searchText = (restaurant.name + ' ' + restaurant.menu + ' ' + restaurant.location).toLowerCase();
+                    if (!searchText.includes(searchTerm)) return false;
+                }
+                
+                if (activeFilters.category) {
+                    if (activeFilters.category === 'korean' && !restaurant.category.includes('\uD55C\uC2DD')) return false;
+                    if (activeFilters.category === 'chinese' && !restaurant.category.includes('\uC911\uC2DD')) return false;
+                    if (activeFilters.category === 'japanese' && !restaurant.category.includes('\uC77C\uC2DD')) return false;
+                    if (activeFilters.category === 'global' && (restaurant.category.includes('\uD55C\uC2DD') || restaurant.category.includes('\uC911\uC2DD'))) return false;
+                }
+                
+                if (activeFilters.walk) {
+                    const walkMatch = restaurant.location.match(/\uB3C4\uBCF4\s*(\d+)\uBD84/);
+                    const walkTime = walkMatch ? parseInt(walkMatch[1]) : 15;
+                    if (walkTime > parseInt(activeFilters.walk)) return false;
+                }
+                
+                if (activeFilters.rating === 'high') {
+                    if (parseFloat(restaurant.rating) < 4.3) return false;
+                }
+                
+                if (activeFilters.preference === 'high') {
+                    const weight = parseInt(restaurant.weight) || 1;
+                    if (weight < 3) return false;
+                }
+                
+                if (activeFilters.outdoor === 'yes') {
+                    const location = restaurant.location.toLowerCase();
+                    // \uCF54\uC5D1\uC2A4 \uAD8C\uC5ED: \uCF54\uC5D1\uC2A4\uBAB0·\uD30C\uB974\uB098\uC2A4\uBAB0·\uD604\uB300\uBC31\uD654\uC810 \uBB34\uC5ED\uC13C\uD130·\uC5F0\uACB0 \uAC74\uBB3C \uBAA8\uB450 \uC81C\uC678
+                    if (location.includes('\uCF54\uC5D1\uC2A4') ||
+                        location.includes('\uD30C\uB974\uB098\uC2A4') ||
+                        location.includes('\uD604\uB300\uBC31\uD654\uC810') ||
+                        location.includes('\uBB34\uC5ED\uC13C\uD130')) {
+                        return false;
+                    }
+                }
+                
+                return true;
+            });
+            
+            displayRestaurants();
+        }
+        
+        function clearAllFilters() {
+            activeFilters = { outdoor: 'yes' }; // \uCF54\uC5D1\uC2A4 \uAD8C\uC5ED \uC81C\uC678\uB294 \uC720\uC9C0
+            document.querySelectorAll('.filter-btn[data-filter]').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            // \uCF54\uC5D1\uC2A4 \uAD8C\uC5ED \uC81C\uC678 \uBC84\uD2BC\uC740 \uB2E4\uC2DC \uD65C\uC131\uD654
+            const outdoorBtn = document.querySelector('[data-filter="outdoor"][data-value="yes"]');
+            if (outdoorBtn) outdoorBtn.classList.add('active');
+            applyFilters();
+            updateStatus('\uBAA8\uB4E0 \uD544\uD130\uAC00 \uCD08\uAE30\uD654\uB418\uC5C8\uC2B5\uB2C8\uB2E4', 'success');
+        }
+        
+        function displayRestaurants() {
+            const listEl = document.getElementById('restaurantList');
+
+            // \uBC30\uC9C0 \uC5C5\uB370\uC774\uD2B8
+            const badgeRow = document.getElementById('poolBadgeRow');
+            const filteredBadge = document.getElementById('filteredBadge');
+            if (allRestaurants.length > 0) {
+                document.getElementById('totalCount').textContent = allRestaurants.length;
+                document.getElementById('filteredCount').textContent = filteredRestaurants.length;
+                const isFiltered = Object.keys(activeFilters).length > 0 ||
+                    document.getElementById('searchBox').value.trim() !== '';
+                filteredBadge.className = 'pool-badge filtered' + (isFiltered ? '' : ' dimmed');
+                badgeRow.style.display = 'flex';
+            }
+            
+            if (filteredRestaurants.length === 0) {
+                listEl.innerHTML = '<div style="text-align: center; padding: 40px; color: #666; font-size: 16px;">🔍 \uC870\uAC74\uC5D0 \uB9DE\uB294 \uB9DB\uC9D1\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.</div>';
+                return;
+            }
+            
+            const html = filteredRestaurants.map(restaurant => {
+                const walkMatch = restaurant.location.match(/\uB3C4\uBCF4\s*(\d+)\uBD84/);
+                const walkBadge = walkMatch ? 
+                    "<span style=\"background: #fff3cd; color: #856404; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 600;\">🚶" + (walkMatch[1]) + "\uBD84</span>" : '';
+                
+                const weight = parseInt(restaurant.weight) || 1;
+                const mapLink = createNaverMapLink(restaurant);
+                
+                
+                // \uCE74\uD14C\uACE0\uB9AC\uBCC4 \uD074\uB798\uC2A4 \uACB0\uC815
+                let categoryClass = 'global';
+                if (restaurant.category.includes('\uD55C\uC2DD')) {
+                    categoryClass = 'korean';
+                } else if (restaurant.category.includes('\uC911\uC2DD')) {
+                    categoryClass = 'chinese';
+                } else if (restaurant.category.includes('\uC77C\uC2DD')) {
+                    categoryClass = 'japanese';
+                }
+                
+                return "<div class=\"restaurant-item\">\n                    <button class=\"delete-btn\" onclick=\"deleteRestaurant('" + (restaurant.name) + "')\" title=\"\uC0AD\uC81C\">×</button>\n                    <div class=\"restaurant-name\">\n                        " + (restaurant.name) + "\n                        <span class=\"card-category " + (categoryClass) + "\">" + (restaurant.category) + "</span>\n                    </div>\n                    <div class=\"restaurant-details\">\n                        <div style=\"margin-bottom: 4px;\">\n                            📍 " + (restaurant.location) + " " + (walkBadge) + " <a class=\"naver-map-btn\" href=\"" + (mapLink) + "\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">N</a>\n                        </div>\n                        <div style=\"margin-bottom: 4px;\">\n                            🍽️ " + (restaurant.menu || '\uBA54\uB274 \uC815\uBCF4 \uC5C6\uC74C') + "\n                        </div>\n                        <div>\n                            💰 " + (restaurant.price || '-') + " | ⭐ " + (restaurant.rating || '-') + "\n                        </div>\n                    </div>\n                    <div class=\"weight-control\">\n                        <span class=\"restaurant-pref\">" + ('★'.repeat(weight)) + ('☆'.repeat(5-weight)) + "</span>\n                        <button class=\"weight-btn\" onclick=\"updateRestaurantWeight('" + (restaurant.name) + "', -1)\" title=\"\uC120\uD638\uB3C4 \uAC10\uC18C\">−</button>\n                        <span class=\"weight-display\">" + (weight) + "</span>\n                        <button class=\"weight-btn\" onclick=\"updateRestaurantWeight('" + (restaurant.name) + "', 1)\" title=\"\uC120\uD638\uB3C4 \uC99D\uAC00\">+</button>\n                    </div>\n                </div>";
+            }).join('');
+            
+            listEl.innerHTML = html;
+        }
+        
+        function showAllRestaurants() {
+            if (allRestaurants.length === 0) {
+                loadRestaurants().then(() => {
+                    if (allRestaurants.length > 0) {
+                        filteredRestaurants = allRestaurants;
+                        displayRestaurants();
+                    }
+                });
+            } else {
+                filteredRestaurants = allRestaurants;
+                displayRestaurants();
+            }
+        }
+        
+        // \uC774\uBCA4\uD2B8 \uB9AC\uC2A4\uB108
+        document.getElementById('randomBtn').addEventListener('click', startSlotMachine);
+        
+        document.getElementById('searchBox').addEventListener('input', function() {
+            if (allRestaurants.length > 0) {
+                applyFilters();
+            }
+        });
+        
+        document.querySelectorAll('.filter-btn[data-filter]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const filterType = this.dataset.filter;
+                const filterValue = this.dataset.value;
+                
+                document.querySelectorAll("[data-filter=\"" + (filterType) + "\"]").forEach(b => {
+                    b.classList.remove('active');
+                });
+                
+                if (activeFilters[filterType] === filterValue) {
+                    delete activeFilters[filterType];
+                } else {
+                    activeFilters[filterType] = filterValue;
+                    this.classList.add('active');
+                }
+                
+                if (allRestaurants.length > 0) {
+                    applyFilters();
+                }
+            });
+        });
+        
+        // \uCD08\uAE30\uD654
+        document.addEventListener('DOMContentLoaded', function() {
+            // \uCF54\uC5D1\uC2A4 \uAD8C\uC5ED \uC81C\uC678 \uBC84\uD2BC \uAE30\uBCF8 \uD65C\uC131\uD654
+            const outdoorBtn = document.querySelector('[data-filter="outdoor"][data-value="yes"]');
+            if (outdoorBtn) outdoorBtn.classList.add('active');
+            loadRestaurants();
+        });
+    </script>
+</body>
+</html>
