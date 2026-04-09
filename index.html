@@ -1159,7 +1159,7 @@
                 <input type="text" class="search-box" id="searchBox" placeholder="🔍 식당이나 메뉴를 검색하세요...">
                 
                 <div class="filters">
-                    <button class="filter-btn" data-filter="walk" data-value="5">🚶‍♂️ 5분 이내</button>
+                    <button class="filter-btn" data-filter="zone" data-value="near">📍 섬유센터 권역</button>
                     <button class="filter-btn" data-filter="rating" data-value="high">⭐ 고평점(4.3↑)</button>
                     <button class="filter-btn" data-filter="preference" data-value="high">👍 선호도(3↑)</button>
                     <button class="filter-btn" data-filter="outdoor" data-value="yes">🏢 코엑스 권역 제외</button>
@@ -1546,10 +1546,19 @@
                     if (activeFilters.category === 'global' && (restaurant.category.includes('\uD55C\uC2DD') || restaurant.category.includes('\uC911\uC2DD'))) return false;
                 }
                 
-                if (activeFilters.walk) {
-                    const walkMatch = restaurant.location.match(/\uB3C4\uBCF4\s*(\d+)\uBD84/);
-                    const walkTime = walkMatch ? parseInt(walkMatch[1]) : 15;
-                    if (walkTime > parseInt(activeFilters.walk)) return false;
+                if (activeFilters.zone === 'near') {
+                    const loc = restaurant.location;
+                    // \uC12C\uC720\uC13C\uD130 \uAD8C\uC5ED: \uD14C\uD5E4\uB780\uB85C \uC0C8\uB85C \uAE38 or \uC9C1\uC811 \uC5F0\uACB0 \uAC74\uBB3C (\uAE38\uAC74\uB840 \uC5C6\uC74C)
+                    const isNear =
+                        loc.includes('\uC12C\uC720\uC13C\uD130') ||
+                        loc.includes('\uAE00\uB77C\uC2A4\uD0C0\uC6CC') ||
+                        loc.includes('\uAE00\uB798\uB4DC') ||
+                        loc.includes('\uBBF8\uB798\uC5D0\uC14B') ||
+                        loc.includes('\uCEE8\uBCA4\uC158\uBCC4\uAD00') ||
+                        /\uD14C\uD5E4\uB780\uB85C\s*8[0-9]\uAE38/.test(loc) ||
+                        /\uD14C\uD5E4\uB780\uB85C\s*[5-6]\d\d/.test(loc) ||
+                        loc.includes('\uD14C\uD5E4\uB780\uB85C');
+                    if (!isNear) return false;
                 }
                 
                 if (activeFilters.rating === 'high') {
