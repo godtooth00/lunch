@@ -1236,10 +1236,8 @@
         let isSpinning = false;
         
         function createKakaoMapLink(restaurant) {
-            // \uC8FC\uC18C\uC5D0\uC11C \uB3C4\uBCF4XX\uBD84 \uC81C\uAC70\uD558\uACE0 \uAC74\uBB3C\uBA85/\uB3C4\uB85C\uBA85\uB9CC \uCD94\uCD9C
-            // 삼성역 고정 검색어: 식당명 + 삼성역
-            const searchQuery = restaurant.name + ' 삼성역';
-            return 'https://map.kakao.com/?q=' + encodeURIComponent(searchQuery);
+            // 식당명 그대로 검색 (카카오 공식명에 지점 정보 포함돼 있어 삼성역 불필요)
+            return 'https://map.kakao.com/?q=' + encodeURIComponent(restaurant.name);
         }
         
         function updateStatus(message, type = 'info') {
